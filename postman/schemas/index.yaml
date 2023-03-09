@@ -1,0 +1,71 @@
+openapi: "3.0.0"
+info:
+    version: "1.0.0"
+    title: "Capitals API"
+    description: Find Capitals
+
+servers:
+    - url: "localhost:3000"
+
+paths:
+    /capitals/{capitalID}:
+        parameters:
+            - name: capitalID
+              description: The unique identifier of a capital
+              in: path
+              required: true
+              schema:
+                  $ref: "#/components/schemas/CapitalID"
+        get:
+            summary: Read a capital
+            responses:
+                "200":
+                    description: The capital corresponding to CapitalID
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Capital"
+                404:
+                    description: No capital found for provided ID
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                500:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+components:
+    schemas:
+        CapitalID:
+            description: The unique identifier of a capital
+            type: string
+        Capital:
+            type: object
+            required:
+                - id
+                - name
+            properties:
+                id:
+                    $ref: "#/components/schemas/CapitalID"
+                name:
+                    type: string
+                description:
+                    type: string
+        Error:
+            type: object
+            required:
+                - message
+            properties:
+                message:
+                    description: A human readable error message
+                    type: string
+    securitySchemes:
+        ApiKey:
+            type: apiKey
+            in: header
+            name: X-Api-Key
+security:
+    - ApiKey: []
